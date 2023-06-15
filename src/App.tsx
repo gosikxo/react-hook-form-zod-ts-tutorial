@@ -1,7 +1,31 @@
 import React from "react"
 import "./App.css"
+import { ZodType, z } from "zod"
+
+type FormData = {
+  firstName: string
+  lastName: string
+  email: string
+  age: number
+  password: string
+  confirmPassword: string
+}
 
 function App() {
+  const schema: ZodType<FormData> = z
+    .object({
+      firstName: z.string().min(2).max(30),
+      lastName: z.string().min(2).max(30),
+      email: z.string().email(),
+      age: z.number().min(18).max(70),
+      password: z.string().min(8).max(100),
+      confirmPassword: z.string().min(8).max(100),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    })
+
   return (
     <div className="App">
       <form>
@@ -17,6 +41,7 @@ function App() {
         <input type="password" />
         <label>Confirm Password:</label>
         <input type="password" />
+        <input type="submit" />
       </form>
     </div>
   )
