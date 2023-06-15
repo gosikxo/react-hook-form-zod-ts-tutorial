@@ -1,6 +1,8 @@
 import React from "react"
 import "./App.css"
 import { ZodType, z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 type FormData = {
   firstName: string
@@ -26,21 +28,30 @@ function App() {
       path: ["confirmPassword"],
     })
 
+  const { register, handleSubmit } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  })
+
+  const submitData = (data: FormData) => {
+    console.log("Data submitted", data)
+  }
+
   return (
     <div className="App">
-      <form>
+      <form onSubmit={handleSubmit(submitData)}>
         <label>First Name:</label>
-        <input type="text" />
+        <input type="text" {...register("firstName")} />
         <label>Last Name:</label>
-        <input type="text" />
+        <input type="text" {...register("lastName")} />
         <label>Email:</label>
-        <input type="email" />
+        <input type="email" {...register("email")} />
         <label>Age:</label>
-        <input type="number" />
+        <input type="number" {...register("age", { valueAsNumber: true })} />
         <label>Password:</label>
-        <input type="password" />
+        <input type="password" {...register("password")} />
         <label>Confirm Password:</label>
-        <input type="password" />
+        <input type="password" {...register("confirmPassword")} />
+
         <input type="submit" />
       </form>
     </div>
